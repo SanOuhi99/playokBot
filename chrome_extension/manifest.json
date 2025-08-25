@@ -1,28 +1,51 @@
 {
   "manifest_version": 3,
-  "name": "PlayOK AutoMove Bot",
-  "version": "1.0",
-  "description": "Automatically responds to opponent moves using Kingrow engine",
+  "name": "PlayOK KingsRow Bot",
+  "version": "2.0",
+  "description": "Automatically plays checkers on PlayOK using KingsRow engine",
   "permissions": [
     "scripting",
     "tabs",
-    "nativeMessaging"
+    "storage",
+    "nativeMessaging",
+    "activeTab"
   ],
-  "host_permissions": ["*://www.playok.com/*"],
+  "host_permissions": [
+    "*://www.playok.com/*",
+    "*://playok.com/*"
+  ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
-  "content_scripts": [{
-    "matches": ["*://www.playok.com/*"],
-    "js": ["content.js"]
-  }],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://www.playok.com/*",
+        "*://playok.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "PlayOK Auto Player"
+    "default_title": "PlayOK KingsRow Bot",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
   },
   "icons": {
     "16": "icon.png",
     "48": "icon.png",
     "128": "icon.png"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icon.png"],
+      "matches": ["*://www.playok.com/*"]
+    }
+  ]
 }
