@@ -1,81 +1,345 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PlayOK Auto Player</title>
+  <meta charset="utf-8">
+  <title>PlayOK KingsRow Bot</title>
   <style>
     body { 
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-      padding: 15px; 
+      padding: 0;
       margin: 0;
-      width: 250px;
+      width: 350px;
+      min-height: 450px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
+      overflow: hidden;
     }
     
-    h3 {
-      margin: 0 0 15px 0;
+    .header {
+      background: rgba(255,255,255,0.1);
+      padding: 15px;
       text-align: center;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .header h2 {
+      margin: 0;
       font-size: 18px;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     }
     
-    .status {
-      background: rgba(255,255,255,0.2);
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      text-align: center;
+    .status-card {
+      background: rgba(255,255,255,0.15);
+      margin: 15px;
+      padding: 15px;
+      border-radius: 10px;
       backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
     }
     
-    .indicator {
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+    
+    .status-indicator {
       display: inline-block;
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      background: #4CAF50;
       margin-right: 8px;
+    }
+    
+    .status-indicator.green {
+      background: #4CAF50;
+      box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
       animation: pulse 2s infinite;
     }
     
-    @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
+    .status-indicator.red {
+      background: #f44336;
+      box-shadow: 0 0 8px rgba(244, 67, 54, 0.6);
     }
     
-    .info {
+    .status-indicator.yellow {
+      background: #FF9800;
+      box-shadow: 0 0 8px rgba(255, 152, 0, 0.6);
+      animation: blink 1s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0.5; }
+    }
+    
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255,255,255,0.3);
+      transition: .4s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    .controls {
+      padding: 0 15px 15px;
+    }
+    
+    .btn {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      margin: 5px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    
+    .btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-1px);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-primary {
+      background: rgba(76, 175, 80, 0.8);
+      border-color: #4CAF50;
+    }
+    
+    .btn-danger {
+      background: rgba(244, 67, 54, 0.8);
+      border-color: #f44336;
+    }
+    
+    .game-info {
+      background: rgba(0,0,0,0.2);
+      margin: 15px;
+      padding: 10px;
+      border-radius: 8px;
       font-size: 12px;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    
+    .game-info h4 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
       opacity: 0.9;
+    }
+    
+    .move-history {
+      font-family: 'Courier New', monospace;
       line-height: 1.4;
+    }
+    
+    .settings-section {
+      margin: 15px;
+      padding: 10px;
+      background: rgba(0,0,0,0.1);
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    
+    .settings-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 8px 0;
+    }
+    
+    input[type="number"] {
+      width: 60px;
+      padding: 4px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 12px;
+    }
+    
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #4CAF50;
+      background: rgba(255,255,255,0.2);
     }
     
     .footer {
       text-align: center;
       font-size: 10px;
       opacity: 0.7;
-      margin-top: 15px;
-      border-top: 1px solid rgba(255,255,255,0.2);
-      padding-top: 10px;
+      padding: 10px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .error-message {
+      background: rgba(244, 67, 54, 0.2);
+      border: 1px solid rgba(244, 67, 54, 0.5);
+      padding: 8px;
+      border-radius: 6px;
+      margin: 10px;
+      font-size: 12px;
+      display: none;
+    }
+    
+    .success-message {
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid rgba(76, 175, 80, 0.5);
+      padding: 8px;
+      border-radius: 6px;
+      margin: 10px;
+      font-size: 12px;
+      display: none;
+    }
+    
+    .engine-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    
+    .stat-item {
+      text-align: center;
+      padding: 8px;
+      background: rgba(0,0,0,0.1);
+      border-radius: 6px;
+      font-size: 11px;
+    }
+    
+    .stat-value {
+      font-size: 16px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 2px;
     }
   </style>
 </head>
 <body>
-  <h3>🏁 PlayOK Auto Player</h3>
-  
-  <div class="status">
-    <span class="indicator"></span>
-    <strong>Active & Monitoring</strong>
+  <div class="header">
+    <h2>🏁 PlayOK KingsRow Bot</h2>
   </div>
-  
-  <div class="info">
-    <p>✅ Watching for opponent moves</p>
-    <p>🤖 Kingrow engine ready</p>
-    <p>⚡ Auto-play enabled</p>
+
+  <div class="status-card">
+    <div class="status-row">
+      <span><span class="status-indicator" id="botStatus"></span>Bot Status</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="botToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+    
+    <div class="status-row">
+      <span><span class="status-indicator" id="engineStatus"></span>KingsRow Engine</span>
+      <span id="engineStatusText">Disconnected</span>
+    </div>
+    
+    <div class="status-row">
+      <span><span class="status-indicator" id="gameStatus"></span>Game Detection</span>
+      <span id="gameStatusText">No game</span>
+    </div>
+    
+    <div class="status-row">
+      <span><span class="status-indicator" id="turnStatus"></span>Turn Status</span>
+      <span id="turnStatusText">Unknown</span>
+    </div>
   </div>
-  
+
+  <div class="engine-stats">
+    <div class="stat-item">
+      <span class="stat-value" id="movesPlayed">0</span>
+      <span>Moves Played</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="engineThinking">No</span>
+      <span>Thinking</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-primary" id="resetGameBtn">🔄 Reset Game</button>
+    <button class="btn" id="manualMoveBtn">🎯 Request Move</button>
+    <button class="btn" id="settingsBtn">⚙️ Settings</button>
+    <button class="btn btn-danger" id="emergencyStopBtn">🛑 Emergency Stop</button>
+  </div>
+
+  <div class="settings-section" id="settingsPanel" style="display: none;">
+    <h4>Settings</h4>
+    <div class="settings-row">
+      <span>Auto-play delay (ms):</span>
+      <input type="number" id="autoPlayDelay" min="100" max="10000" step="100">
+    </div>
+    <div class="settings-row">
+      <span>Detection interval (ms):</span>
+      <input type="number" id="detectionInterval" min="100" max="2000" step="100">
+    </div>
+  </div>
+
+  <div class="game-info">
+    <h4>Recent Moves</h4>
+    <div class="move-history" id="moveHistory">
+      No moves yet...
+    </div>
+  </div>
+
+  <div class="error-message" id="errorMessage"></div>
+  <div class="success-message" id="successMessage"></div>
+
   <div class="footer">
-    Powered by Kingrow Engine
+    Powered by KingsRow Engine v2.0
   </div>
+
+  <script src="popup.js"></script>
 </body>
 </html>
