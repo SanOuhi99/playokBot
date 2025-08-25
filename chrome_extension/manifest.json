@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "PlayOK AutoMove Bot",
+  "version": "1.0",
+  "description": "Automatically responds to opponent moves using Kingrow engine",
+  "permissions": [
+    "scripting",
+    "tabs",
+    "nativeMessaging"
+  ],
+  "host_permissions": ["*://www.playok.com/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [{
+    "matches": ["*://www.playok.com/*"],
+    "js": ["content.js"]
+  }],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "PlayOK Auto Player"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}

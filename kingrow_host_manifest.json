@@ -1,0 +1,9 @@
+{
+  "name": "com.playok.kingrow",
+  "description": "Kingrow checkers engine host for PlayOK auto-player",
+  "path": "C:\\path\\to\\kingrow_connector.exe",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://YOUR_EXTENSION_ID_HERE/"
+  ]
+}

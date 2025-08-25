@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PlayOK Auto Player</title>
+  <style>
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      padding: 15px; 
+      margin: 0;
+      width: 250px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    h3 {
+      margin: 0 0 15px 0;
+      text-align: center;
+      font-size: 18px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+    
+    .status {
+      background: rgba(255,255,255,0.2);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+    
+    .indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4CAF50;
+      margin-right: 8px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    
+    .info {
+      font-size: 12px;
+      opacity: 0.9;
+      line-height: 1.4;
+    }
+    
+    .footer {
+      text-align: center;
+      font-size: 10px;
+      opacity: 0.7;
+      margin-top: 15px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h3>🏁 PlayOK Auto Player</h3>
+  
+  <div class="status">
+    <span class="indicator"></span>
+    <strong>Active & Monitoring</strong>
+  </div>
+  
+  <div class="info">
+    <p>✅ Watching for opponent moves</p>
+    <p>🤖 Kingrow engine ready</p>
+    <p>⚡ Auto-play enabled</p>
+  </div>
+  
+  <div class="footer">
+    Powered by Kingrow Engine
+  </div>
+</body>
+</html>
